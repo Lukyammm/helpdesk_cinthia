@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Chamados - Lukyam</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .menu-btn {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: var(--box-shadow);
+        }
+
+        .menu-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .menu-btn.active {
+            background-color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .content {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .video-upload-section {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .video-upload-section.active {
+            border-color: var(--accent-color);
+            background-color: rgba(79, 195, 247, 0.1);
+        }
+
+        .video-list {
+            margin-top: 15px;
+        }
+
+        .video-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin-bottom: 8px;
+        }
+
+        .video-item span {
+            flex-grow: 1;
+        }
+
+        .video-item .order {
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .additional-field {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .additional-field input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .urgency-indicator {
+            height: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            background: linear-gradient(to right, green, yellow, red);
+            position: relative;
+        }
+
+        .urgency-marker {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .urgency-text {
+            margin-top: 5px;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            border-radius: var(--border-radius);
+        }
+
+        .low-urgency {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .medium-urgency {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .high-urgency {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .ticket {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .ticket-type {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .ticket-urgency {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .ticket-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .help-content {
+            line-height: 1.8;
+        }
+
+        .help-content h3 {
+            margin-top: 20px;
+            color: var(--secondary-color);
+        }
+
+        .help-content ul {
+            margin-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                flex-direction: column;
+            }
+            
+            .menu-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Chamados - Lukyam</h1>
+        </header>
+
+        <div class="menu">
+            <button class="menu-btn active" data-section="open-ticket">Abrir chamado</button>
+            <button class="menu-btn" data-section="check-tickets">Conferir chamados</button>
+            <button class="menu-btn" data-section="help">Ajuda</button>
+        </div>
+
+        <!-- Seção de Abrir Chamado -->
+        <div id="open-ticket" class="content">
+            <h2>Abrir Novo Chamado</h2>
+            
+            <div class="form-group">
+                <label for="ticket-type">Tipo de Chamado</label>
+                <select id="ticket-type" class="form-control">
+                    <option value="">Selecione o tipo</option>
+                    <option value="planilha">Planilha</option>
+                    <option value="video">Vídeo</option>
+                    <option value="outro">Outro</option>
+                </select>
+            </div>
+
+            <!-- Seção de Vídeo (inicialmente oculta) -->
+            <div id="video-section" class="hidden">
+                <div class="form-group">
+                    <label>Quantidade de Vídeos</label>
+                    <input type="number" id="video-count" min="1" value="1" class="form-control">
+                </div>
+
+                <div id="video-upload-container">
+                    <div class="video-upload-section" id="video-upload-1">
+                        <p>Arraste e solte o vídeo aqui ou clique para selecionar</p>
+                        <input type="file" accept="video/*" class="video-input" data-index="1" style="display: none;">
+                        <button class="btn btn-warning select-video-btn" data-index="1">Selecionar Vídeo</button>
+                        <div class="video-list hidden">
+                            <div class="video-item">
+                                <span class="order">1</span>
+                                <span class="video-name">Nenhum vídeo selecionado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="add-more-videos" class="btn">Enviar mais vídeos</button>
+            </div>
+
+            <!-- Seção de Descrição (para todos os tipos) -->
+            <div class="form-group">
+                <label for="ticket-description">Descrição</label>
+                <textarea id="ticket-description" class="form-control" placeholder="Descreva o problema ou solicitação"></textarea>
+            </div>
+
+            <!-- Seção de Procedimento (apenas para vídeo) -->
+            <div id="procedure-section" class="form-group hidden">
+                <label for="procedure-name">Procedimento</label>
+                <input type="text" id="procedure-name" class="form-control" placeholder="Nome do procedimento">
+                
+                <label for="procedure-date" style="margin-top: 15px;">Data do Procedimento</label>
+                <input type="date" id="procedure-date" class="form-control">
+                
+                <label for="responsible-doctor" style="margin-top: 15px;">Médico Responsável</label>
+                <input type="text" id="responsible-doctor" class="form-control" placeholder="Nome do médico responsável">
+                
+                <div id="additional-fields-container">
+                    <!-- Campos adicionais serão inseridos aqui -->
+                </div>
+                
+                <button id="add-additional-field" class="btn btn-warning" style="margin-top: 10px;">
+                    Adicionar Outro Campo
+                </button>
+            </div>
+
+            <!-- Seção de Prazo e Urgência -->
+            <div class="form-group">
+                <label for="ticket-deadline">Prazo</label>
+                <input type="date" id="ticket-deadline" class="form-control">
+                
+                <div id="urgency-display" class="hidden" style="margin-top: 20px;">
+                    <label>Nível de Urgência</label>
+                    <div class="urgency-indicator">
+                        <div class="urgency-marker" id="urgency-marker" style="left: 50%;">↑</div>
+                    </div>
+                    <div id="urgency-text" class="urgency-text">Média</div>
+                </div>
+            </div>
+
+            <button id="submit-ticket" class="btn btn-success">Enviar Chamado</button>
+        </div>
+
+        <!-- Seção de Conferir Chamados -->
+        <div id="check-tickets" class="content hidden">
+            <h2>Chamados Abertos</h2>
+            <div id="tickets-list">
+                <p>Nenhum chamado encontrado.</p>
+            </div>
+        </div>
+
+        <!-- Seção de Ajuda -->
+        <div id="help" class="content hidden">
+            <h2>Ajuda</h2>
+            <div class="help-content">
+                <h3>Como abrir um chamado</h3>
+                <ol>
+                    <li>Selecione o tipo de chamado (Planilha, Vídeo ou Outro)</li>
+                    <li>Preencha as informações solicitadas</li>
+                    <li>Para vídeos, selecione os arquivos na ordem correta</li>
+                    <li>Defina um prazo para conclusão</li>
+                    <li>Clique em "Enviar Chamado"</li>
+                </ol>
+
+                <h3>Tipos de Chamado</h3>
+                <ul>
+                    <li><strong>Planilha:</strong> Para problemas ou solicitações relacionadas a planilhas</li>
+                    <li><strong>Vídeo:</strong> Para envio e edição de vídeos (é possível enviar múltiplos arquivos)</li>
+                    <li><strong>Outro:</strong> Para qualquer outro tipo de solicitação</li>
+                </ul>
+
+                <h3>Níveis de Urgência</h3>
+                <p>O sistema calcula automaticamente a urgência com base no prazo definido:</p>
+                <ul>
+                    <li><span class="low-urgency">Baixa:</span> Prazo maior que 7 dias</li>
+                    <li><span class="medium-urgency">Média:</span> Prazo entre 3 e 7 dias</li>
+                    <li><span class="high-urgency">Alta:</span> Prazo menor que 3 dias</li>
+                </ul>
+
+                <h3>Dúvidas?</h3>
+                <p>Entre em contato com o suporte técnico se precisar de ajuda adicional.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do DOM
+            const menuButtons = document.querySelectorAll('.menu-btn');
+            const contentSections = document.querySelectorAll('.content');
+            const ticketTypeSelect = document.getElementById('ticket-type');
+            const videoSection = document.getElementById('video-section');
+            const procedureSection = document.getElementById('procedure-section');
+            const videoUploadContainer = document.getElementById('video-upload-container');
+            const addMoreVideosBtn = document.getElementById('add-more-videos');
+            const videoCountInput = document.getElementById('video-count');
+            const addAdditionalFieldBtn = document.getElementById('add-additional-field');
+            const additionalFieldsContainer = document.getElementById('additional-fields-container');
+            const ticketDeadlineInput = document.getElementById('ticket-deadline');
+            const urgencyDisplay = document.getElementById('urgency-display');
+            const urgencyMarker = document.getElementById('urgency-marker');
+            const urgencyText = document.getElementById('urgency-text');
+            const submitTicketBtn = document.getElementById('submit-ticket');
+            const ticketsList = document.getElementById('tickets-list');
+
+            // Armazenamento de tickets (simulado)
+            let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+            let videoFiles = {};
+
+            // Menu navigation
+            menuButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    menuButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Hide all content sections
+                    contentSections.forEach(section => section.classList.add('hidden'));
+                    
+                    // Show the selected section
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.remove('hidden');
+                    
+                    // If checking tickets, update the list
+                    if (sectionId === 'check-tickets') {
+                        updateTicketsList();
+                    }
+                });
+            });
+
+            // Ticket type change
+            ticketTypeSelect.addEventListener('change', function() {
+                const type = this.value;
+                
+                // Hide all optional sections first
+                videoSection.classList.add('hidden');
+                procedureSection.classList.add('hidden');
+                
+                // Show relevant sections based on type
+                if (type === 'video') {
+                    videoSection.classList.remove('hidden');
+                    procedureSection.classList.remove('hidden');
+                    resetVideoUploads();
+                }
+            });
+
+            // Video count change
+            videoCountInput.addEventListener('change', function() {
+                const count = parseInt(this.value);
+                updateVideoUploadSections(count);
+            });
+
+            // Add more videos button
+            addMoreVideosBtn.addEventListener('click', function() {
+                const currentCount = document.querySelectorAll('.video-upload-section').length;
+                const newCount = currentCount + 1;
+                videoCountInput.value = newCount;
+                addVideoUploadSection(newCount);
+            });
+
+            // Additional field button
+            addAdditionalFieldBtn.addEventListener('click', function() {
+                const fieldId = Date.now();
+                const fieldHtml = `
+                    <div class="additional-field" id="field-${fieldId}">
+                        <input type="text" placeholder="Título do campo (opcional)" class="additional-field-title">
+                        <input type="text" placeholder="Valor" class="additional-field-value">
+                        <button class="btn btn-danger remove-field-btn" data-field="${fieldId}">X</button>
+                    </div>
+                `;
+                additionalFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
+                
+                // Add event listener to remove button
+                document.querySelector(`.remove-field-btn[data-field="${fieldId}"]`).addEventListener('click', function() {
+                    document.getElementById(`field-${this.getAttribute('data-field')}`).remove();
+                });
+            });
+
+            // Deadline change - calculate urgency
+            ticketDeadlineInput.addEventListener('change', function() {
+                if (!this.value) {
+                    urgencyDisplay.classList.add('hidden');
+                    return;
+                }
+                
+                const deadline = new Date(this.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const diffTime = deadline - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                let urgency, position, className;
+                
+                if (diffDays <= 3) {
+                    urgency = "Alta";
+                    position = "10%";
+                    className = "high-urgency";
+                } else if (diffDays <= 7) {
+                    urgency = "Média";
+                    position = "50%";
+                    className = "medium-urgency";
+                } else {
+                    urgency = "Baixa";
+                    position = "90%";
+                    className = "low-urgency";
+                }
+                
+                urgencyMarker.style.left = position;
+                urgencyText.textContent = `${urgency} (${diffDays} ${diffDays === 1 ? 'dia' : 'dias'})`;
+                urgencyText.className = `urgency-text ${className}`;
+                urgencyDisplay.classList.remove('hidden');
+            });
+
+            // Submit ticket
+            submitTicketBtn.addEventListener('click', function() {
+                const type = ticketTypeSelect.value;
+                const description = document.getElementById('ticket-description').value;
+                const deadline = ticketDeadlineInput.value;
+                
+                if (!type || !description || !deadline) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+                
+                // For video tickets, check if videos were uploaded
+                if (type === 'video') {
+                    const videoSections = document.querySelectorAll('.video-upload-section');
+                    let hasVideos = false;
+                    
+                    for (let section of videoSections) {
+                        const index = section.id.split('-')[2];
+                        if (videoFiles[index]) {
+                            hasVideos = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!hasVideos) {
+                        alert('Por favor, adicione pelo menos um vídeo.');
+                        return;
+                    }
+                }
+                
+                // Create ticket object
+                const ticket = {
+                    id: Date.now(),
+                    type: type,
+                    description: description,
+                    deadline: deadline,
+                    createdAt: new Date().toISOString(),
+                    status: 'Aberto',
+                    urgency: urgencyText.textContent.split(' ')[0]
+                };
+                
+                // Add type-specific data
+                if (type === 'video') {
+                    ticket.procedure = {
+                        name: document.getElementById('procedure-name').value,
+                        date: document.getElementById('procedure-date').value,
+                        doctor: document.getElementById('responsible-doctor').value,
+                        additionalFields: []
+                    };
+                    
+                    // Get additional fields
+                    const additionalFields = document.querySelectorAll('.additional-field');
+                    additionalFields.forEach(field => {
+                        const title = field.querySelector('.additional-field-title').value || 'Outro';
+                        const value = field.querySelector('.additional-field-value').value;
+                        if (value) {
+                            ticket.procedure.additionalFields.push({ title, value });
+                        }
+                    });
+                    
+                    // Add video info (in a real app, you would upload the files to a server)
+                    ticket.videos = [];
+                    for (let index in videoFiles) {
+                        ticket.videos.push({
+                            order: parseInt(index),
+                            name: videoFiles[index].name,
+                            size: videoFiles[index].size,
+                            type: videoFiles[index].type
+                        });
+                    }
+                }
+                
+                // Save ticket
+                tickets.push(ticket);
+                localStorage.setItem('tickets', JSON.stringify(tickets));
+                
+                // Reset form
+                resetForm();
+                
+                // Show success message
+                alert('Chamado enviado com sucesso!');
+                
+                // Switch to tickets list
+                document.querySelector('.menu-btn[data-section="check-tickets"]').click();
+            });
+
+            // Helper functions
+            function updateVideoUploadSections(count) {
+                const currentCount = document.querySelectorAll('.video-upload-section').length;
+                
+                if (count > currentCount) {
+                    // Add new sections
+                    for (let i = currentCount + 1; i <= count; i++) {
+                        addVideoUploadSection(i);
+                    }
+                } else if (count < currentCount) {
+                    // Remove sections (keep the files already uploaded)
+                    for (let i = currentCount; i > count; i--) {
+                        const section = document.getElementById(`video-upload-${i}`);
+                        if (section) {
+                            section.remove();
+                            delete videoFiles[i];
+                        }
+                    }
+                }
+            }
+
+            function addVideoUploadSection(index) {
+                const sectionHtml = `
+                    <div class="video-upload-section" id="video-upload-${index}">
+                        <p>Arraste e solte o vídeo aqui ou clique para selecionar</p>
+                        <input type="file" accept="video/*" class="video-input" data-index="${index}" style="display: none;">
+                        <button class="btn btn-warning select-video-btn" data-index="${index}">Selecionar Vídeo</button>
+                        <div class="video-list hidden">
+                            <div class="video-item">
+                                <span class="order">${index}</span>
+                                <span class="video-name">Nenhum vídeo selecionado</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                videoUploadContainer.insertAdjacentHTML('beforeend', sectionHtml);
+                
+                // Set up event listeners for the new section
+                const section = document.getElementById(`video-upload-${index}`);
+                const fileInput = section.querySelector('.video-input');
+                const selectBtn = section.querySelector('.select-video-btn');
+                const videoList = section.querySelector('.video-list');
+                const videoName = section.querySelector('.video-name');
+                
+                // Click on button to open file dialog
+                selectBtn.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                // File input change
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        videoFiles[index] = file;
+                        videoName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                        videoList.classList.remove('hidden');
+                        section.classList.add('active');
+                    }
+                });
+                
+                // Drag and drop
+                section.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    section.classList.add('active');
+                });
+                
+                section.addEventListener('dragleave', function() {
+                    section.classList.remove('active');
+                });
+                
+                section.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    section.classList.remove('active');
+                    
+                    if (e.dataTransfer.files.length > 0) {
+                        const file = e.dataTransfer.files[0];
+                        if (file.type.startsWith('video/')) {
+                            videoFiles[index] = file;
+                            videoName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                            videoList.classList.remove('hidden');
+                        } else {
+                            alert('Por favor, selecione apenas arquivos de vídeo.');
+                        }
+                    }
+                });
+            }
+
+            function resetVideoUploads() {
+                videoUploadContainer.innerHTML = '';
+                videoFiles = {};
+                addVideoUploadSection(1);
+                videoCountInput.value = 1;
+            }
+
+            function resetForm() {
+                ticketTypeSelect.value = '';
+                document.getElementById('ticket-description').value = '';
+                ticketDeadlineInput.value = '';
+                urgencyDisplay.classList.add('hidden');
+                
+                // Reset video section
+                videoSection.classList.add('hidden');
+                resetVideoUploads();
+                
+                // Reset procedure section
+                procedureSection.classList.add('hidden');
+                document.getElementById('procedure-name').value = '';
+                document.getElementById('procedure-date').value = '';
+                document.getElementById('responsible-doctor').value = '';
+                additionalFieldsContainer.innerHTML = '';
+            }
+
+            function updateTicketsList() {
+                if (tickets.length === 0) {
+                    ticketsList.innerHTML = '<p>Nenhum chamado encontrado.</p>';
+                    return;
+                }
+                
+                // Sort tickets by urgency and creation date
+                tickets.sort((a, b) => {
+                    const urgencyOrder = { 'Alta': 1, 'Média': 2, 'Baixa': 3 };
+                    return urgencyOrder[a.urgency] - urgencyOrder[b.urgency] || 
+                           new Date(a.createdAt) - new Date(b.createdAt);
+                });
+                
+                let html = '';
+                tickets.forEach(ticket => {
+                    const createdAt = new Date(ticket.createdAt).toLocaleDateString();
+                    const deadline = new Date(ticket.deadline).toLocaleDateString();
+                    
+                    html += `
+                        <div class="ticket">
+                            <div class="ticket-header">
+                                <span>Chamado #${ticket.id}</span>
+                                <span class="ticket-type">${formatTicketType(ticket.type)}</span>
+                            </div>
+                            <div class="ticket-urgency ${getUrgencyClass(ticket.urgency)}">
+                                ${ticket.urgency} • Prazo: ${deadline}
+                            </div>
+                            <div class="ticket-details">
+                                <p>${ticket.description}</p>
+                                <p><strong>Criado em:</strong> ${createdAt}</p>
+                                ${ticket.type === 'video' ? `<p><strong>Procedimento:</strong> ${ticket.procedure.name}</p>` : ''}
+                                ${ticket.type === 'video' && ticket.procedure.doctor ? `<p><strong>Médico:</strong> ${ticket.procedure.doctor}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                ticketsList.innerHTML = html;
+            }
+
+            function formatTicketType(type) {
+                return type.charAt(0).toUpperCase() + type.slice(1);
+            }
+
+            function getUrgencyClass(urgency) {
+                if (urgency.includes('Alta')) return 'high-urgency';
+                if (urgency.includes('Média')) return 'medium-urgency';
+                return 'low-urgency';
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Initialize
+            updateTicketsList();
+        });
+    </script>
+</body>
+</html>
